@@ -22,10 +22,9 @@ def all():
 @app.route('/add/', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
-        donor = Donor(name=request.form['donor'])
-        donor.save()
-        donation = Donation(donor=donor.name,
-                            value=int(request.form['donation']))
+        donor = Donor.select().where(Donor.name == request.form['donor']).get()
+        donation = Donation(donor=donor,
+                            value=int(request.form['amount']))
         donation.save()
         donations = Donation.select()
         return render_template('donations.jinja2', donations=donations)
