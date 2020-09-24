@@ -25,13 +25,16 @@ def add():
         try:
             donor = Donor.select().where(Donor.name == request.form['donor']).get()
         except Donor.DoesNotExist:
-            return render_template('add.jinja2')  # Improve later
+            return render_template('add.jinja2',
+                                   error='Invalid Donor, '
+                                   'please enter a donor that is in the database.')
         donation = Donation(donor=donor,
                             value=int(request.form['amount']))
         donation.save()
         # donations = Donation.select()
         return redirect(url_for('all'))
     return render_template('add.jinja2')
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 6738))
