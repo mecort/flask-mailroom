@@ -22,12 +22,15 @@ def all():
 @app.route('/add/', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
-        donor = Donor.select().where(Donor.name == request.form['donor']).get()
+        try:
+            donor = Donor.select().where(Donor.name == request.form['donor']).get()
+        except Donor.DoesNotExist:
+            return render_template('add.jinja2')  # Improve later
         donation = Donation(donor=donor,
                             value=int(request.form['amount']))
         donation.save()
-        donations = Donation.select()
-        return render_template('donations.jinja2', donations=donations)
+        # donations = Donation.select()
+        return redirect(url_for('all'))
     return render_template('add.jinja2')
 
 if __name__ == "__main__":
